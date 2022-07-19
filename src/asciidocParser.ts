@@ -7,6 +7,7 @@ import { AsciidocPreviewConfigurationManager } from './features/previewConfig'
 import { SkinnyTextDocument } from './util/document'
 import { IncludeItems } from './asciidoctorFindIncludeProcessor'
 import { AsciidocContributionProvider } from './asciidocExtensions'
+import { getContentCatalog, getSrc } from './features/antora/antoraSupport'
 
 const asciidoctorFindIncludeProcessor = require('./asciidoctorFindIncludeProcessor')
 
@@ -125,6 +126,9 @@ export class AsciidocParser {
 
     const registry = processor.Extensions.create()
 
+    const contentCatalog = await getContentCatalog(doc.uri, context)
+    const src = await getSrc(doc.uri, contentCatalog)
+
     const asciidoctorWebViewConverter = new AsciidoctorWebViewConverter(
       doc,
       context,
@@ -132,6 +136,8 @@ export class AsciidocParser {
       cspArbiter,
       this.contributionProvider,
       previewConfigurationManager,
+      contentCatalog,
+      src,
       line
     )
     processor.ConverterFactory.register(asciidoctorWebViewConverter, ['webview-html5'])

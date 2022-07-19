@@ -4,8 +4,7 @@ import * as vscode from 'vscode'
 import { getAntoraConfig } from '../features/antora/antoraSupport'
 
 async function testGetAntoraConfig (asciidocPath, antoraConfigExpectedFsPath, root) {
-  const file = await vscode.workspace.openTextDocument(vscode.Uri.file(`${root}/${asciidocPath}`))
-  const antoraConfigUri = await getAntoraConfig(file)
+  const antoraConfigUri = await getAntoraConfig(vscode.Uri.file(`${root}/${asciidocPath}`))
   if (antoraConfigExpectedFsPath === undefined) {
     assert.strictEqual(antoraConfigUri, undefined)
   } else {

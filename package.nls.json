@@ -2,9 +2,10 @@
 	"displayName": "AsciiDoc",
 	"description": "Provides rich language support for AsciiDoc.",
 
+	"asciidoc.preview.title": "Preview",
 	"asciidoc.exportAsPDF.title": "Export Document as PDF",
 	"asciidoc.pasteImage.title": "Paste Image",
-	"asciidoc.preview.title": "Open Preview",
+	"asciidoc.showPreview.title": "Open Preview",
 	"asciidoc.preview.refresh.title": "Refresh Preview",
 	"asciidoc.preview.toggleLock.title": "Toggle Preview Locking",
 	"asciidoc.previewSide.title": "Open Preview to the Side",
@@ -72,5 +73,7 @@
 	"asciidoc.useWorkspaceRoot.deprecationMessage": "This setting has been replaced by `#asciidoc.useWorkspaceRootAsBaseDirectory#` and no longer has any effect.",
 	"asciidoc.use_kroki.desc": "**Deprecated:** Enables Kroki integration to generate diagrams.",
 	"asciidoc.use_kroki.deprecationMessage": "This setting has been replaced by `#asciidoc.extensions.enableKroki#` and no longer has any effect.",
-	"asciidoc.antora.enableAntoraSupport.desc": "Enable [Antora](https://antora.org/) support"
+
+	"asciidoc.antora.title": "Antora",
+	"asciidoc.antora.enableAntoraSupport.desc": "Enable [Antora](https://antora.org/) support."
 }

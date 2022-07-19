@@ -2,9 +2,10 @@
 	"displayName": "AsciiDoc",
 	"description": "リッチで軽量なマークアップであるAsciiDocをサポートします。",
 
+	"asciidoc.preview.title": "プレビューを",
 	"asciidoc.exportAsPDF.title": "PDFへエキスポート",
 	"asciidoc.pasteImage.title" : "イメージの貼り付け",
-	"asciidoc.preview.title": "プレビューを開く",
+	"asciidoc.showPreview.title": "プレビューを開く",
 	"asciidoc.preview.refresh.title": "プレビューの更新",
 	"asciidoc.preview.toggleLock.title": "プレビューのロック切り替え",
 	"asciidoc.previewSide.title": "サイドにプレビューを開く",
@@ -71,5 +72,7 @@
 	"asciidoc.useWorkspaceRoot.deprecationMessage": "本設定は、`#asciidoc.useWorkspaceRootAsBaseDirectory#`に置き換えられ、動作しません。",
 	"asciidoc.use_kroki.desc": "**非推奨:** ダイアグラム生成Krokiを使用します。",
 	"asciidoc.use_kroki.deprecationMessage": "本設定は、`#asciidoc.extensions.enableKroki#`に置き換えられ、動作しません。",
+
+	"asciidoc.antora.title": "Antora",
 	"asciidoc.antora.enableAntoraSupport.desc": "Enable [Antora](https://antora.org/) support."
 }
