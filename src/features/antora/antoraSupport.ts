@@ -204,7 +204,7 @@ function getActiveAntoraConfig (textDocumentUri: Uri, extensionContext: Extensio
   throw new AntoraDisabledError('')
 }
 
-export function resolveAntoraImageIds (id: string, contentCatalog: ContentCatalog | undefined, src: { [key: string]: string }): string | undefined {
+export function resolveAntoraResourceIds (id: string, contentCatalog: ContentCatalog | undefined, src: { [key: string]: string }): string | undefined {
   if (contentCatalog === undefined) {
     return undefined
   }

@@ -6,7 +6,7 @@ import { WebviewResourceProvider } from './util/resources'
 import { Asciidoctor } from '@asciidoctor/core'
 import { SkinnyTextDocument } from './util/document'
 import * as nls from 'vscode-nls'
-import { resolveAntoraImageIds } from './features/antora/antoraSupport'
+import {  resolveAntoraResourceIds } from './features/antora/antoraSupport'
 import { AsciidocContributionProvider } from './asciidocExtensions'
 import ContentCatalog from '@antora/content-classifier/lib/content-catalog'
 
@@ -191,12 +191,12 @@ export class AsciidoctorWebViewConverter {
       const title = node.hasAttribute('title') ? ` title="${node.title}"` : ''
       return `<a href="${href}"${id}${role}${title} data-href="${href}">${node.text}</a>`
     }
-    if (nodeName === 'image') {
+    if (nodeName === 'image' || nodeName === 'video') {
       const nodeAttributes = node.getAttributes()
       const target = nodeAttributes.target
-      const imageUri = resolveAntoraImageIds(target, this.contentCatalog, this.src)
-      if (imageUri !== undefined) {
-        node.setAttribute('target', imageUri)
+      const resourceUri = resolveAntoraResourceIds(target, this.contentCatalog, this.src)
+      if (resourceUri !== undefined) {
+        node.setAttribute('target', resourceUri)
       }
       return this.baseConverter.convert(node, transform)
     }
