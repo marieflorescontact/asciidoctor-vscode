@@ -95,13 +95,16 @@ class AntoraDisabledError extends Error {
 
 export async function parseAntoraConfig (textDocumentUri: Uri): Promise<{ [key: string]: any }> {
   const antoraConfigUri = await getAntoraConfig(textDocumentUri)
-  const antoraConfigPath = antoraConfigUri.fsPath
-  try {
-    return yaml.load(fs.readFileSync(antoraConfigPath, 'utf8'))
-  } catch (err) {
-    console.log(`Unable to parse ${antoraConfigPath}, cause:` + err.toString())
-    return {}
+  if (antoraConfigUri !== undefined) {
+    const antoraConfigPath = antoraConfigUri.fsPath
+    try {
+      return yaml.load(fs.readFileSync(antoraConfigPath, 'utf8'))
+    } catch (err) {
+      console.log(`Unable to parse ${antoraConfigPath}, cause:` + err.toString())
+      return {}
+    }
   }
+  return {}
 }
 
 export async function getAttributes (textDocumentUri: Uri): Promise<{ [key: string]: string }> {
@@ -163,30 +166,33 @@ async function createPlaybook (textDocumentUri: Uri, extensionContext: Extension
   }
 }
 
-export async function getSrc (textDocumentUri: Uri, contentCatalog: ContentCatalog | undefined) {
+export async function getSrc (textDocumentUri: Uri, contentCatalog: ContentCatalog | undefined):Promise<{ [key: string]: any } | {}> {
   const antoraConfig = await getAntoraConfig(textDocumentUri)
   const doc = await parseAntoraConfig(textDocumentUri)
-  const contentSourceRootPath = path.dirname(antoraConfig.fsPath)
-  if (doc !== {} && contentCatalog !== undefined) {
-    try {
-      const file = contentCatalog.getByPath({
-        component: doc.name,
-        version: doc.version,
-        path: path.relative(contentSourceRootPath, textDocumentUri.path),
+  if (antoraConfig !== undefined) {
+    const contentSourceRootPath = path.dirname(antoraConfig.fsPath)
+    if (doc !== {} && contentCatalog !== undefined) {
+      try {
+        const file = contentCatalog.getByPath({
+          component: doc.name,
+          version: doc.version,
+          path: path.relative(contentSourceRootPath, textDocumentUri.path),
+        }
+        )
+        return {
+          component: file.src.component,
+          version: file.src.version,
+          module: file.src.module,
+          family: file.src.family,
+          relative: file.src.relative,
+        }
+      } catch (e) {
+        console.log(`Unable to return src : ${e}`)
+        return {}
       }
-      )
-      return {
-        component: file.src.component,
-        version: file.src.version,
-        module: file.src.module,
-        family: file.src.family,
-        relative: file.src.relative,
-      }
-    } catch (e) {
-      console.log(`Unable to return src : ${e}`)
-      return {}
     }
   }
+
   return {}
 }
 
@@ -201,10 +207,11 @@ function getActiveAntoraConfig (textDocumentUri: Uri, extensionContext: Extensio
       return getAntoraConfig(textDocumentUri)
     }
   }
-  throw new AntoraDisabledError('')
+  //throw new AntoraDisabledError('')
+  return undefined
 }
 
-export function resolveAntoraResourceIds (id: string, contentCatalog: ContentCatalog | undefined, src: { [key: string]: string }): string | undefined {
+export function resolveAntoraResourceIds (id: string, contentCatalog: ContentCatalog | undefined, src: { [key: string]: string }, family: string): string | undefined {
   if (contentCatalog === undefined) {
     return undefined
   }
@@ -212,7 +219,7 @@ export function resolveAntoraResourceIds (id: string, contentCatalog: ContentCat
     component: src.component,
     version: src.version,
     module: src.module,
-  }, 'image', ['image'])
+  }, family, ['attachment', 'example', 'image', 'page', 'partial'])
   if (resource !== undefined) {
     return resource.src.abspath
   }

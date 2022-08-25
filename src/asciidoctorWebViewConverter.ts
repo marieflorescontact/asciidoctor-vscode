@@ -6,7 +6,7 @@ import { WebviewResourceProvider } from './util/resources'
 import { Asciidoctor } from '@asciidoctor/core'
 import { SkinnyTextDocument } from './util/document'
 import * as nls from 'vscode-nls'
-import {  resolveAntoraResourceIds } from './features/antora/antoraSupport'
+import { resolveAntoraResourceIds } from './features/antora/antoraSupport'
 import { AsciidocContributionProvider } from './asciidocExtensions'
 import ContentCatalog from '@antora/content-classifier/lib/content-catalog'
 
@@ -100,7 +100,7 @@ export class AsciidoctorWebViewConverter {
     private readonly contributionProvider: AsciidocContributionProvider,
     previewConfigurations: AsciidocPreviewConfigurationManager,
     private readonly contentCatalog: ContentCatalog | undefined,
-    private readonly src: { [key: string]: any },
+    private readonly src: { [key: string]: any } | {},
     line: number | undefined = undefined,
     state?: any
   ) {
@@ -191,10 +191,27 @@ export class AsciidoctorWebViewConverter {
       const title = node.hasAttribute('title') ? ` title="${node.title}"` : ''
       return `<a href="${href}"${id}${role}${title} data-href="${href}">${node.text}</a>`
     }
+    if (nodeName === 'inline_anchor' && node.type === 'xref') {
+      let target = node.target
+      const family = target.includes('$') ? target.split('$').shift().split(':').pop() : 'page'
+      // Remove version from the Antora id
+      const targetWithoutAntoraVersion = target.split('@').pop()
+      const ext = targetWithoutAntoraVersion.split('.').pop()
+      // If adoc file extension .adoc is missing
+      if (ext === targetWithoutAntoraVersion) {
+        target = target + '.adoc'
+      }
+      const resourceUri = resolveAntoraResourceIds(target, this.contentCatalog, this.src, family)
+      const linkName = typeof (node.text) === 'string' ? node.text : resourceUri
+      if (resourceUri !== undefined) {
+        return `<a href="${resourceUri}" data-href="${resourceUri}">${linkName}</a>`
+      }
+      return this.baseConverter.convert(node, transform)
+    }
     if (nodeName === 'image' || nodeName === 'video') {
       const nodeAttributes = node.getAttributes()
       const target = nodeAttributes.target
-      const resourceUri = resolveAntoraResourceIds(target, this.contentCatalog, this.src)
+      const resourceUri = resolveAntoraResourceIds(target, this.contentCatalog, this.src, 'image')
       if (resourceUri !== undefined) {
         node.setAttribute('target', resourceUri)
       }

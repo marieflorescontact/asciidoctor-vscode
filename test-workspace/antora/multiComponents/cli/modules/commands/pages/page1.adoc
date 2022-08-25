@@ -12,3 +12,9 @@ image::seaswell.png[]
 
 
 video::A001_C064_09224Y_001.mp4[]
+
+
+xref:image$seaswell.png[]
+
+
+include::attachment$text.ext[]
